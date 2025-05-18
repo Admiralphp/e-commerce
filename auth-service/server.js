@@ -12,8 +12,15 @@ connectDB();
 
 const app = express();
 
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:4200', 'http://localhost:80', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
-app.use('/', authRoutes); // Changed from '/auth' to '/' since the routes already include '/auth'
+app.use('/auth', authRoutes); // Changed back to '/auth' for consistency
 
 // Health check endpoint
 app.get('/health', (req, res) => {

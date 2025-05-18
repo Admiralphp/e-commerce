@@ -11,8 +11,12 @@ const options = {
     servers: [
       {
         url: 'http://localhost:3000',
-        description: 'Local development server',
+        description: 'Local Development Server',
       },
+      {
+        url: 'http://localhost:80',
+        description: 'Gateway Server',
+      }
     ],
     components: {
       securitySchemes: {
@@ -24,7 +28,7 @@ const options = {
       },
     },
   },
-  apis: ['./routes/*.js', './models/*.js'], // Path to the API docs
+  apis: ['./routes/*.js'], // Path to the API docs
 };
 
 const swaggerSpec = swaggerJsdoc(options);
