@@ -1,0 +1,419 @@
+.order-detail-container {
+  position: relative;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  color: #0066CC;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.back-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230066CC'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 19l-7-7 7-7' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #1d1d1f;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.loader {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid #0066CC;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.order-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.order-summary {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.summary-section {
+  padding: 24px;
+  border-bottom: 1px solid #f5f5f7;
+}
+
+.summary-section:last-child {
+  border-bottom: none;
+}
+
+.summary-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  color: #1d1d1f;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  width: 140px;
+  font-weight: 500;
+  color: #86868b;
+}
+
+.info-value {
+  flex: 1;
+  color: #1d1d1f;
+}
+
+.info-value.total {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.info-value.address {
+  line-height: 1.5;
+}
+
+.status-badge,
+.payment-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-pending {
+  background-color: #FFF8E1;
+  color: #E65100;
+}
+
+.status-processing {
+  background-color: #E1F5FE;
+  color: #01579B;
+}
+
+.status-shipped {
+  background-color: #E0F2F1;
+  color: #004D40;
+}
+
+.status-delivered {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+}
+
+.status-cancelled {
+  background-color: #FFEBEE;
+  color: #B71C1C;
+}
+
+.payment-paid {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+}
+
+.payment-pending {
+  background-color: #FFF8E1;
+  color: #E65100;
+}
+
+.status-actions {
+  padding: 24px;
+}
+
+.status-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+}
+
+.status-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status-btn.active {
+  outline: 2px solid currentColor;
+}
+
+.status-btn.pending {
+  background-color: #FFF8E1;
+  color: #E65100;
+}
+
+.status-btn.processing {
+  background-color: #E1F5FE;
+  color: #01579B;
+}
+
+.status-btn.shipped {
+  background-color: #E0F2F1;
+  color: #004D40;
+}
+
+.status-btn.delivered {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+}
+
+.status-btn.cancelled {
+  background-color: #FFEBEE;
+  color: #B71C1C;
+}
+
+.order-items-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.order-items-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  color: #1d1d1f;
+}
+
+.order-items {
+  margin-bottom: 24px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f5f5f7;
+}
+
+.order-item:first-child {
+  padding-top: 0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 4px;
+  color: #1d1d1f;
+}
+
+.item-price {
+  font-size: 14px;
+  color: #86868b;
+}
+
+.item-total {
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.order-totals {
+  border-top: 1px solid #e6e6e6;
+  padding-top: 16px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.total-row.subtotal {
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e6e6e6;
+}
+
+.total-row.grand-total {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e6e6e6;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0066CC;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #FF3B30;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.3s;
+}
+
+.modal-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #1d1d1f;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-body p {
+  margin: 0;
+  color: #1d1d1f;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e6e6e6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 992px) {
+  .order-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .info-row {
+    flex-direction: column;
+  }
+  
+  .info-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  
+  .status-buttons {
+    flex-direction: column;
+  }
+  
+  .status-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,104 @@
+<div class="product-list-container">
+  <div class="page-header">
+    <h1>Products</h1>
+    <button class="btn btn-primary" (click)="createProduct()">
+      Add Product
+    </button>
+  </div>
+  
+  <div class="filters-container">
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Search products..." 
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+    
+    <div class="category-filters">
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === null"
+        (click)="onCategoryFilter(null)"
+      >
+        All
+      </button>
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === 'case'"
+        (click)="onCategoryFilter('case')"
+      >
+        Cases
+      </button>
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === 'charger'"
+        (click)="onCategoryFilter('charger')"
+      >
+        Chargers
+      </button>
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === 'earphone'"
+        (click)="onCategoryFilter('earphone')"
+      >
+        Earphones
+      </button>
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === 'screen_protector'"
+        (click)="onCategoryFilter('screen_protector')"
+      >
+        Screen Protectors
+      </button>
+      <button 
+        class="category-btn" 
+        [class.active]="selectedCategory === 'other'"
+        (click)="onCategoryFilter('other')"
+      >
+        Other
+      </button>
+    </div>
+  </div>
+  
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader"></div>
+    <p>Loading products...</p>
+  </div>
+  
+  <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state">
+    <div class="empty-icon"></div>
+    <h3>No products found</h3>
+    <p>Try adjusting your search or filters, or add a new product.</p>
+    <button class="btn btn-primary" (click)="createProduct()">Add Product</button>
+  </div>
+  
+  <div *ngIf="!loading && filteredProducts.length > 0" class="products-grid">
+    <div *ngFor="let product of filteredProducts" class="product-card">
+      <div class="product-image" [style.backgroundImage]="'url(' + (product.imageUrl || 'https://via.placeholder.com/150') + ')'"></div>
+      <div class="product-details">
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-category">{{ product.category | titlecase }}</p>
+        <p class="product-price">{{ formatPrice(product.price) }}</p>
+        <p class="product-stock" [class.low-stock]="product.stock < 10">
+          {{ product.stock }} in stock
+        </p>
+      </div>
+      <div class="product-actions">
+        <button class="action-btn" (click)="editProduct(product.id)">Edit</button>
+        <button class="action-btn delete" (click)="confirmDelete(product.id)">Delete</button>
+      </div>
+      
+      <!-- Delete confirmation dialog -->
+      <div *ngIf="confirmingDeleteId === product.id" class="delete-confirm">
+        <p>Are you sure you want to delete this product?</p>
+        <div class="confirm-actions">
+          <button class="btn btn-danger" (click)="deleteProduct(product.id)">Delete</button>
+          <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

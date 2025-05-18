@@ -1,0 +1,68 @@
+You are part of a development team building a web application for selling phone accessories (cases, chargers, earphones, etc.) using a microservices architecture.
+
+🔧 Project Architecture Overview:
+
+Frontend: Next.js
+
+Authentication Service: Node.js + MongoDB (JWT-based)
+
+Product Catalog Service: Go + PostgreSQL
+
+Order Service: Node.js + MongoDB ← this is your task
+
+Admin Dashboard: Angular
+
+All services communicate via an Nginx API Gateway, and all APIs are protected with JWT tokens.
+
+✅ Your task:
+Implement the Order Service using Node.js with Express.js and MongoDB.
+
+📌 The Order Service should handle the following features:
+
+Add items to a shopping cart
+
+View the current user's cart
+
+Place an order (simulate checkout)
+
+View past orders
+
+Admin can view all orders and mark them as fulfilled or delete them
+
+🔐 Authentication Requirements:
+
+JWT is required for all endpoints (customer and admin)
+
+Use user ID from the token to associate cart and order data with a user
+
+🗃 Data Models:
+
+CartItem:
+
+productId (string)
+
+quantity (number)
+
+Order:
+
+userId (from JWT)
+
+items (array of CartItems)
+
+totalAmount (number)
+
+status (e.g., "pending", "fulfilled")
+
+createdAt (timestamp)
+
+🛠 Tech Stack Requirements:
+
+Node.js with Express.js
+
+MongoDB (Mongoose ODM)
+
+JWT for authentication and authorization
+
+RESTful API routes (e.g., /cart, /orders)
+
+Please generate the full project structure including models, routes, controllers, middleware, and JWT validation.

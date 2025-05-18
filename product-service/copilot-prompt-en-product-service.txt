@@ -1,0 +1,64 @@
+You are part of a development team building a web application for selling phone accessories (cases, chargers, earphones, etc.) using a microservices architecture.
+
+🔧 Project Architecture Overview:
+
+Frontend (Customer UI): Next.js
+
+Authentication Service: Node.js + MongoDB (JWT-based)
+
+Product Catalog Service: Go (Fiber) + PostgreSQL ← this is your task
+
+Order Service: Node.js + MongoDB
+
+Admin Dashboard: Angular
+
+All services communicate via an Nginx API Gateway, and all APIs are protected using JWT authentication.
+
+✅ Your task:
+Implement the Product Catalog microservice using Go with Fiber and PostgreSQL (hosted on Neon).
+
+📌 The service must support:
+
+Admin CRUD operations for products (Create, Read, Update, Delete)
+
+Public API to allow customers to:
+
+Browse products
+
+Filter by category, price, etc.
+
+Search by keyword
+
+🔒 Security:
+
+Use JWT for route protection (admins only for write access)
+
+Public read routes should not require authentication
+
+🗃 Product Entity Example Fields:
+
+id (UUID)
+
+name (string)
+
+description (text)
+
+price (float)
+
+category (string)
+
+image_url (string)
+
+stock (integer)
+
+🛠 Tech Stack Requirements:
+
+Go with Fiber framework
+
+PostgreSQL (Neon) for database
+
+GORM or any ORM compatible with PostgreSQL
+
+Use RESTful conventions for the API routes
+
+Please generate the full structure of the Go project, including models, routes, controllers, middleware for JWT authentication, and database connection setup.

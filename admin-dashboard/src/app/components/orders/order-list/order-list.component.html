@@ -1,0 +1,137 @@
+<div class="order-list-container">
+  <div class="page-header">
+    <h1>Customer Orders</h1>
+  </div>
+  
+  <div class="filters-container">
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Search by customer name, email or order ID..." 
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+    
+    <div class="status-filters">
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === 'all'"
+        (click)="onStatusFilter('all')"
+      >
+        All Orders
+      </button>
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === orderStatusEnum.PENDING"
+        (click)="onStatusFilter(orderStatusEnum.PENDING)"
+      >
+        Pending
+      </button>
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === orderStatusEnum.PROCESSING"
+        (click)="onStatusFilter(orderStatusEnum.PROCESSING)"
+      >
+        Processing
+      </button>
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === orderStatusEnum.SHIPPED"
+        (click)="onStatusFilter(orderStatusEnum.SHIPPED)"
+      >
+        Shipped
+      </button>
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === orderStatusEnum.DELIVERED"
+        (click)="onStatusFilter(orderStatusEnum.DELIVERED)"
+      >
+        Delivered
+      </button>
+      <button 
+        class="status-btn" 
+        [class.active]="selectedStatus === orderStatusEnum.CANCELLED"
+        (click)="onStatusFilter(orderStatusEnum.CANCELLED)"
+      >
+        Cancelled
+      </button>
+    </div>
+  </div>
+  
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader"></div>
+    <p>Loading orders...</p>
+  </div>
+  
+  <div *ngIf="!loading && filteredOrders.length === 0" class="empty-state">
+    <div class="empty-icon"></div>
+    <h3>No orders found</h3>
+    <p>Try adjusting your search or filters to find what you're looking for.</p>
+  </div>
+  
+  <div *ngIf="!loading && filteredOrders.length > 0" class="orders-table-container">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of filteredOrders">
+          <td class="order-id">
+            <a href="javascript:void(0)" (click)="viewOrderDetails(order.id)">{{ order.id.slice(0, 8) }}...</a>
+          </td>
+          <td class="customer-info">
+            <div class="customer-name">{{ order.customerName }}</div>
+            <div class="customer-email">{{ order.customerEmail }}</div>
+          </td>
+          <td>{{ formatDate(order.createdAt) }}</td>
+          <td class="total-amount">{{ formatPrice(order.totalAmount) }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+              {{ order.status | titlecase }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <div class="order-actions">
+              <button class="action-btn view" (click)="viewOrderDetails(order.id)">View</button>
+              
+              <button *ngIf="order.status === orderStatusEnum.PENDING" 
+                class="action-btn process" 
+                (click)="confirmProcess(order.id)">
+                Process
+              </button>
+              
+              <button class="action-btn delete" (click)="confirmDelete(order.id)">Delete</button>
+            </div>
+            
+            <!-- Process confirmation -->
+            <div *ngIf="confirmingProcessId === order.id" class="action-confirm process-confirm">
+              <p>Mark this order as processing?</p>
+              <div class="confirm-actions">
+                <button class="btn btn-primary" (click)="processOrder(order.id)">Yes, Process</button>
+                <button class="btn btn-secondary" (click)="cancelProcess()">Cancel</button>
+              </div>
+            </div>
+            
+            <!-- Delete confirmation -->
+            <div *ngIf="confirmingDeleteId === order.id" class="action-confirm delete-confirm">
+              <p>Are you sure you want to delete this order?</p>
+              <div class="confirm-actions">
+                <button class="btn btn-danger" (click)="deleteOrder(order.id)">Delete</button>
+                <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
