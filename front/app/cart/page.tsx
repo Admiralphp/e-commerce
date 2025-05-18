@@ -28,14 +28,7 @@ export default function CartPage() {
       return;
     }
 
-    setIsProcessing(true);
-    
-    // Simulate processing
-    setTimeout(() => {
-      clearCart();
-      setIsProcessing(false);
-      router.push('/checkout/success');
-    }, 1500);
+    router.push('/checkout');
   };
 
   if (items.length === 0) {

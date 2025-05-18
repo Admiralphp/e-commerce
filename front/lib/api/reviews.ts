@@ -1,6 +1,9 @@
 import { Review } from '@/types/review';
 
-// Mock database of reviews
+// API URL
+const API_URL = 'http://api.phoneaccessories.local/api';
+
+// Mock database of reviews for fallback
 const mockReviews: Review[] = [
   {
     id: '101',
@@ -66,8 +69,23 @@ const mockReviews: Review[] = [
 
 // Function to get reviews for a specific product
 export async function getReviewsByProductId(productId: string): Promise<Review[]> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  return mockReviews.filter(review => review.productId === productId);
+  try {
+    const url = `${API_URL}/products/${productId}/reviews`;
+    console.log('Fetching reviews from API:', url);
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('API returned reviews:', data);
+    return data.reviews || [];
+  } catch (error) {
+    console.error('Error fetching reviews from API:', error);
+    console.log('Falling back to mock reviews');
+    
+    // Fallback to mock data if API fails
+    return mockReviews.filter(review => review.productId === productId);
+  }
 }

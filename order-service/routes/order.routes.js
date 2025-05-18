@@ -10,9 +10,52 @@ const router = express.Router();
 router.use(auth);
 
 /**
- * @route   POST /api/orders
- * @desc    Create a new order
- * @access  Private
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - shippingAddress
+ *               - paymentMethod
+ *             properties:
+ *               shippingAddress:
+ *                 type: object
+ *                 required:
+ *                   - name
+ *                   - street
+ *                   - city
+ *                   - zipCode
+ *                   - country
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                   street:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   zipCode:
+ *                     type: string
+ *                   country:
+ *                     type: string
+ *               paymentMethod:
+ *                 type: string
+ *                 enum: [credit_card, paypal, bank_transfer]
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *       400:
+ *         description: Invalid input data
+ *       401:
+ *         description: Not authorized
  */
 router.post('/', [
   check('shippingAddress', 'Shipping address is required').isObject(),
@@ -25,41 +68,127 @@ router.post('/', [
 ], orderController.createOrder);
 
 /**
- * @route   GET /api/orders
- * @desc    Get current user's orders
- * @access  Private
+ * @swagger
+ * /api/orders:
+ *   get:
+ *     summary: Get current user's orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's orders
+ *       401:
+ *         description: Not authorized
  */
 router.get('/', orderController.getUserOrders);
 
 /**
- * @route   GET /api/orders/:id
- * @desc    Get order by ID
- * @access  Private
+ * @swagger
+ * /api/orders/{id}:
+ *   get:
+ *     summary: Get order by ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order details
+ *       401:
+ *         description: Not authorized
+ *       404:
+ *         description: Order not found
  */
 router.get('/:id', orderController.getOrderById);
 
 /**
- * @route   PUT /api/orders/:id/cancel
- * @desc    Cancel an order
- * @access  Private
+ * @swagger
+ * /api/orders/{id}/cancel:
+ *   put:
+ *     summary: Cancel an order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order cancelled successfully
+ *       401:
+ *         description: Not authorized
+ *       404:
+ *         description: Order not found
  */
 router.put('/:id/cancel', orderController.cancelOrder);
 
 /**
- * Admin routes
- */
-
-/**
- * @route   GET /api/orders/admin/all
- * @desc    Get all orders (admin only)
- * @access  Private/Admin
+ * @swagger
+ * /api/orders/admin/all:
+ *   get:
+ *     summary: Get all orders (admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all orders
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Admin access required
  */
 router.get('/admin/all', admin, orderController.getAllOrders);
 
 /**
- * @route   PUT /api/orders/admin/:id
- * @desc    Update order status (admin only)
- * @access  Private/Admin
+ * @swagger
+ * /api/orders/admin/{id}:
+ *   put:
+ *     summary: Update order status (admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, processing, shipped, delivered, cancelled]
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *       400:
+ *         description: Invalid status
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Admin access required
+ *       404:
+ *         description: Order not found
  */
 router.put('/admin/:id', [
   admin,

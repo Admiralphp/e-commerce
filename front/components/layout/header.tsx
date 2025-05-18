@@ -93,6 +93,11 @@ export default function Header() {
                           <p className="text-sm text-muted-foreground">{user?.email}</p>
                         </div>
                         <SheetClose asChild>
+                          <Link href="/orders" className="block px-4 py-2 rounded-md hover:bg-accent">
+                            My Orders
+                          </Link>
+                        </SheetClose>
+                        <SheetClose asChild>
                           <Button variant="outline" className="w-full" onClick={logout}>
                             Log out
                           </Button>
