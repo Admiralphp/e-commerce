@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: favorites-service
+
+  # MongoDB Configuration
+  data:
+    mongodb:
+      host: ${MONGODB_HOST:localhost}
+      port: ${MONGODB_PORT:27017}
+      database: ${MONGODB_DATABASE:favoritesdb}
+      username: ${MONGODB_USERNAME:}
+      password: ${MONGODB_PASSWORD:}
+
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 2000ms
+      jedis:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/v1
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Logging Configuration
+logging:
+  level:
+    com.phoneaccessories.favorites: ${LOG_LEVEL:INFO}
+    org.springframework.data.mongodb: ${MONGODB_LOG_LEVEL:WARN}
+    org.springframework.data.redis: ${REDIS_LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Cache Configuration
+cache:
+  redis:
+    ttl: ${CACHE_TTL:3600} # seconds
+    key-prefix: favorites-service

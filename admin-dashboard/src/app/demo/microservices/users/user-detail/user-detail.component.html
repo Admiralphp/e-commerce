@@ -1,0 +1,202 @@
+<div class="row">
+  <div class="col-sm-12">
+    <!-- Alert Messages -->
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-congo-green" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading user details...</p>
+    </div>
+
+    <!-- User Details -->
+    <div *ngIf="!isLoading && user">
+      <!-- Header Card -->
+      <app-card headerClass="bg-congo-red text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <div class="avatar-lg me-3">
+              <div class="avatar-initial rounded-circle bg-light">
+                <span class="text-dark fs-3">{{ user.name.charAt(0) }}</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="mb-0">{{ user.name }}</h4>
+              <p class="text-muted mb-0">{{ user.email }}</p>
+              <div class="mt-2">
+                <span class="badge rounded-pill me-2" [ngClass]="getRoleClass(user.role)">
+                  {{ user.role | titlecase }}
+                </span>
+                <span class="badge rounded-pill" [ngClass]="getStatusClass(user.status)">
+                  {{ user.status | titlecase }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-sm bg-congo-green text-white me-2" [routerLink]="['/users/edit', user.id]">
+              <i class="ti ti-edit me-1"></i> Edit
+            </button>
+            <button class="btn btn-sm bg-congo-yellow text-dark" (click)="goBack()">
+              <i class="ti ti-arrow-left me-1"></i> Back
+            </button>
+          </div>
+        </div>
+      </app-card>
+
+      <div class="row mt-4">
+        <!-- User Information -->
+        <div class="col-md-4">
+          <app-card cardTitle="User Information" headerClass="bg-congo-green text-white">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">ID</span>
+                <span>{{ user.id }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Name</span>
+                <span>{{ user.name }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Email</span>
+                <span>{{ user.email }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Phone</span>
+                <span>{{ user.phone || 'Not provided' }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Role</span>
+                <span class="badge rounded-pill" [ngClass]="getRoleClass(user.role)">
+                  {{ user.role | titlecase }}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Status</span>
+                <span class="badge rounded-pill" [ngClass]="getStatusClass(user.status)">
+                  {{ user.status | titlecase }}
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-bold">Joined</span>
+                <span>{{ formatDate(user.createdAt) }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center" *ngIf="user.lastLogin">
+                <span class="fw-bold">Last Login</span>
+                <span>{{ formatDate(user.lastLogin) }}</span>
+              </li>
+            </ul>
+          </app-card>
+        </div>
+
+        <!-- Address Information -->
+        <div class="col-md-4">
+          <app-card cardTitle="Address Information" headerClass="bg-congo-yellow text-dark">
+            <div *ngIf="user.address">
+              <address>
+                <strong>{{ user.name }}</strong><br>
+                {{ user.address.street }}<br>
+                {{ user.address.city }}, {{ user.address.state }} {{ user.address.zip }}<br>
+                {{ user.address.country }}<br>
+                <abbr title="Phone">P:</abbr> {{ user.phone || 'Not provided' }}
+              </address>
+            </div>
+            <div *ngIf="!user.address" class="text-center py-4">
+              <i class="ti ti-map-pin text-muted" style="font-size: 48px;"></i>
+              <p class="mt-3">No address information available</p>
+            </div>
+          </app-card>
+
+          <!-- User Actions -->
+          <app-card cardTitle="User Actions" headerClass="bg-congo-red text-white" class="mt-4">
+            <div class="d-grid gap-2">
+              <button 
+                *ngFor="let option of statusOptions" 
+                class="btn" 
+                [ngClass]="option.value === 'suspended' ? 'btn-outline-danger' : (option.value === 'active' ? 'bg-congo-green text-white' : 'bg-congo-yellow text-dark')"
+                (click)="updateUserStatus(option.value)"
+              >
+                {{ option.label }} User
+              </button>
+              <button class="btn btn-outline-primary" [routerLink]="['/users/edit', user.id]">
+                <i class="ti ti-edit me-1"></i> Edit User
+              </button>
+            </div>
+          </app-card>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="col-md-4">
+          <app-card cardTitle="Recent Orders" headerClass="bg-congo-green text-white">
+            <div *ngIf="user.orders && user.orders.length > 0">
+              <div class="list-group">
+                <a *ngFor="let order of user.orders.slice(0, 5)" [routerLink]="['/orders/detail', order.id]" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">Order #{{ order.id }}</h6>
+                    <small>{{ formatDate(order.createdAt) }}</small>
+                  </div>
+                  <p class="mb-1">Total: {{ order.totalAmount | currency }}</p>
+                  <small class="text-muted">
+                    <span class="badge rounded-pill" [ngClass]="getStatusClass(order.status)">
+                      {{ order.status | titlecase }}
+                    </span>
+                  </small>
+                </a>
+              </div>
+              <div class="text-center mt-3" *ngIf="user.orders.length > 5">
+                <a [routerLink]="['/orders']" [queryParams]="{user: user.id}" class="btn btn-sm btn-outline-primary">
+                  View All Orders
+                </a>
+              </div>
+            </div>
+            <div *ngIf="!user.orders || user.orders.length === 0" class="text-center py-4">
+              <i class="ti ti-shopping-cart text-muted" style="font-size: 48px;"></i>
+              <p class="mt-3">No orders found for this user</p>
+            </div>
+          </app-card>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <app-card cardTitle="Activity Log" headerClass="bg-congo-yellow text-dark" class="mt-4">
+        <div *ngIf="user.activityLog && user.activityLog.length > 0">
+          <div class="timeline">
+            <div class="timeline-item" *ngFor="let activity of user.activityLog">
+              <div class="timeline-badge" [ngClass]="'bg-' + (activity.type === 'login' ? 'success' : (activity.type === 'order' ? 'primary' : 'info'))">
+                <i class="ti" [ngClass]="'ti-' + (activity.type === 'login' ? 'login' : (activity.type === 'order' ? 'shopping-cart' : 'activity'))"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-1">{{ activity.description }}</h6>
+                <p class="text-muted mb-0">{{ formatDate(activity.timestamp) }}</p>
+                <p *ngIf="activity.details" class="mb-0">{{ activity.details }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!user.activityLog || user.activityLog.length === 0" class="text-center py-4">
+          <i class="ti ti-activity text-muted" style="font-size: 48px;"></i>
+          <p class="mt-3">No activity log available for this user</p>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Not Found -->
+    <div *ngIf="!isLoading && !user && !errorMessage" class="text-center py-5">
+      <i class="ti ti-alert-circle text-danger" style="font-size: 48px;"></i>
+      <h5 class="mt-3">User Not Found</h5>
+      <p class="text-muted">The user you are looking for does not exist or has been removed.</p>
+      <button class="btn bg-congo-green text-white mt-3" (click)="goBack()">
+        <i class="ti ti-arrow-left me-1"></i> Back to Users
+      </button>
+    </div>
+  </div>
+</div>

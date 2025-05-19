@@ -1,0 +1,48 @@
+You are part of a development team building a web application for selling phone accessories (cases, chargers, earphones, etc.) using a microservices architecture.
+
+🔧 Project Architecture Overview:
+
+Frontend (Customer UI): Next.js
+
+Authentication Service: Node.js + MongoDB (using JWT)
+
+Product Catalog Service: Go (Fiber) + PostgreSQL
+
+Order Service: Node.js + MongoDB
+
+Admin Dashboard: Angular ← this is your task
+
+All services communicate via an Nginx API Gateway, and all APIs are protected using JWT authentication.
+
+✅ Your task:
+Implement the Admin Dashboard microservice using Angular.
+
+📌 The Admin Dashboard should allow administrators to:
+
+Log in using a form (JWT-based authentication)
+
+View the list of products
+
+Create, update, and delete products (CRUD via the Product Catalog API)
+
+View customer orders
+
+Delete or mark orders as processed
+
+🔐 Authentication Requirements:
+
+Use JWT to authenticate and authorize API requests
+
+Redirect to the login page if the JWT token is missing or invalid
+
+🛠 Technical Stack:
+
+Angular 17+
+
+Angular Router
+
+Angular Forms (Reactive or Template-Driven)
+
+HttpClient for API requests
+
+Please start by generating the Angular project structure, including components, services, and routing. Then, implement the forms, secured API calls, and the necessary UI elements for admin management.

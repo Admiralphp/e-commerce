@@ -1,0 +1,5 @@
+INSERT INTO products (id, name, description, price, image, category, brand, rating, review_count, features, in_stock, featured, created_at, updated_at)
+VALUES 
+  ('1', 'Ultra Slim Phone Case', 'Sleek, lightweight protection for your phone.', 24.99, 'https://images.pexels.com/photos/1294886/pexels-photo-1294886.jpeg', 'cases', 'belkin', 4.5, 128, ARRAY['Ultra-slim design', 'Shock-absorbing corners'], true, true, NOW(), NOW()),
+  ('2', 'Fast Wireless Charger Pad', 'Charge your compatible devices quickly with this wireless charging pad.', 29.99, 'https://images.pexels.com/photos/4526407/pexels-photo-4526407.jpeg', 'chargers', 'anker', 4.7, 95, ARRAY['15W fast charging', 'Compatible with Qi-enabled devices'], true, true, NOW(), NOW()),
+  ('3', 'Premium Wireless Earbuds', 'Immerse yourself in rich, high-quality sound with these wireless earbuds.', 89.99, 'https://images.pexels.com/photos/3394665/pexels-photo-3394665.jpeg', 'headphones', 'sony', 4.8, 213, ARRAY['Active noise cancellation', '8-hour battery life'], true, true, NOW(), NOW());

@@ -1,0 +1,211 @@
+<div class="row">
+  <div class="col-sm-12">
+    <!-- Alert Messages -->
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-congo-green" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading order details...</p>
+    </div>
+
+    <!-- Order Details -->
+    <div *ngIf="!isLoading && order">
+      <!-- Header Card -->
+      <app-card headerClass="bg-congo-red text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Order #{{ order.id }}</h5>
+            <p class="text-muted mb-0">Placed on {{ formatDate(order.createdAt) }}</p>
+          </div>
+          <div>
+            <span class="badge rounded-pill me-2" [ngClass]="getStatusClass(order.status)">
+              {{ order.status | titlecase }}
+            </span>
+            <button class="btn btn-sm bg-congo-yellow text-dark me-2" (click)="printOrder()">
+              <i class="ti ti-printer me-1"></i> Print
+            </button>
+            <button class="btn btn-sm bg-congo-green text-white" (click)="goBack()">
+              <i class="ti ti-arrow-left me-1"></i> Back to Orders
+            </button>
+          </div>
+        </div>
+      </app-card>
+
+      <div class="row">
+        <!-- Customer Information -->
+        <div class="col-md-4">
+          <app-card cardTitle="Customer Information" headerClass="bg-congo-green text-white">
+            <div class="mb-3">
+              <h6 class="fw-bold">Contact Information</h6>
+              <p class="mb-1">{{ order.shippingAddress.name }}</p>
+              <p class="mb-1">{{ order.shippingAddress.email }}</p>
+              <p class="mb-1">{{ order.shippingAddress.phone }}</p>
+            </div>
+            <div class="mb-3">
+              <h6 class="fw-bold">Shipping Address</h6>
+              <p class="mb-1">{{ order.shippingAddress.street }}</p>
+              <p class="mb-1">{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zip }}</p>
+              <p class="mb-1">{{ order.shippingAddress.country }}</p>
+            </div>
+            <div *ngIf="order.billingAddress">
+              <h6 class="fw-bold">Billing Address</h6>
+              <p class="mb-1">{{ order.billingAddress.street }}</p>
+              <p class="mb-1">{{ order.billingAddress.city }}, {{ order.billingAddress.state }} {{ order.billingAddress.zip }}</p>
+              <p class="mb-1">{{ order.billingAddress.country }}</p>
+            </div>
+          </app-card>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="col-md-4">
+          <app-card cardTitle="Payment Information" headerClass="bg-congo-yellow text-dark">
+            <div class="mb-3">
+              <h6 class="fw-bold">Payment Method</h6>
+              <p class="mb-1">{{ order.paymentMethod }}</p>
+              <p *ngIf="order.paymentDetails" class="mb-1">
+                <span *ngIf="order.paymentDetails.cardType">{{ order.paymentDetails.cardType }}</span>
+                <span *ngIf="order.paymentDetails.lastFour"> ending in {{ order.paymentDetails.lastFour }}</span>
+              </p>
+            </div>
+            <div class="mb-3">
+              <h6 class="fw-bold">Payment Status</h6>
+              <p class="mb-1">
+                <span class="badge rounded-pill" [ngClass]="order.isPaid ? 'bg-success' : 'bg-danger'">
+                  {{ order.isPaid ? 'Paid' : 'Unpaid' }}
+                </span>
+              </p>
+              <p *ngIf="order.isPaid && order.paidAt" class="mb-1 text-muted">
+                Paid on {{ formatDate(order.paidAt) }}
+              </p>
+            </div>
+          </app-card>
+        </div>
+
+        <!-- Order Actions -->
+        <div class="col-md-4">
+          <app-card cardTitle="Order Actions" headerClass="bg-congo-red text-white">
+            <div class="mb-3">
+              <h6 class="fw-bold">Update Order Status</h6>
+              <div class="d-grid gap-2">
+                <button 
+                  *ngFor="let option of nextStatusOptions" 
+                  class="btn" 
+                  [ngClass]="option.value === 'cancelled' ? 'btn-outline-danger' : 'bg-congo-green text-white'"
+                  (click)="updateOrderStatus(option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+            <div class="mb-3" *ngIf="nextStatusOptions.length === 0">
+              <p class="text-muted">No status updates available for {{ order.status | lowercase }} orders.</p>
+            </div>
+          </app-card>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <app-card cardTitle="Order Items" headerClass="bg-congo-green text-white" class="mt-4">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.items">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="product-img me-3" *ngIf="item.image">
+                      <img [src]="item.image" alt="{{ item.name }}" width="50" height="50" class="img-thumbnail">
+                    </div>
+                    <div>
+                      <h6 class="mb-0">{{ item.name }}</h6>
+                      <small class="text-muted" *ngIf="item.options">
+                        <span *ngFor="let option of item.options | keyvalue; let last = last">
+                          {{ option.key }}: {{ option.value }}{{ !last ? ', ' : '' }}
+                        </span>
+                      </small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ item.sku }}</td>
+                <td class="text-center">{{ formatCurrency(item.price) }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-end">{{ formatCurrency(item.price * item.quantity) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="text-end fw-bold">Subtotal:</td>
+                <td class="text-end">{{ formatCurrency(subtotal) }}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-end fw-bold">Shipping:</td>
+                <td class="text-end">{{ formatCurrency(order.shippingCost) }}</td>
+              </tr>
+              <tr *ngIf="order.discount > 0">
+                <td colspan="4" class="text-end fw-bold">Discount:</td>
+                <td class="text-end text-danger">-{{ formatCurrency(order.discount) }}</td>
+              </tr>
+              <tr *ngIf="order.tax > 0">
+                <td colspan="4" class="text-end fw-bold">Tax:</td>
+                <td class="text-end">{{ formatCurrency(order.tax) }}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-end fw-bold">Total:</td>
+                <td class="text-end fw-bold fs-5 text-congo-green">{{ formatCurrency(order.totalAmount) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </app-card>
+
+      <!-- Order Notes -->
+      <app-card *ngIf="order.notes" cardTitle="Order Notes" headerClass="bg-congo-yellow text-dark" class="mt-4">
+        <p class="mb-0">{{ order.notes }}</p>
+      </app-card>
+
+      <!-- Order Timeline -->
+      <app-card cardTitle="Order Timeline" headerClass="bg-congo-red text-white" class="mt-4">
+        <div class="timeline">
+          <div class="timeline-item" *ngFor="let event of order.statusHistory">
+            <div class="timeline-badge" [ngClass]="getStatusClass(event.status)">
+              <i class="ti ti-check"></i>
+            </div>
+            <div class="timeline-content">
+              <h6 class="mb-1">{{ event.status | titlecase }}</h6>
+              <p class="text-muted mb-0">{{ formatDate(event.timestamp) }}</p>
+              <p *ngIf="event.comment" class="mb-0">{{ event.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- Not Found -->
+    <div *ngIf="!isLoading && !order && !errorMessage" class="text-center py-5">
+      <i class="ti ti-alert-circle text-danger" style="font-size: 48px;"></i>
+      <h5 class="mt-3">Order Not Found</h5>
+      <p class="text-muted">The order you are looking for does not exist or has been removed.</p>
+      <button class="btn bg-congo-green text-white mt-3" (click)="goBack()">
+        <i class="ti ti-arrow-left me-1"></i> Back to Orders
+      </button>
+    </div>
+  </div>
+</div>

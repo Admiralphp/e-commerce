@@ -1,0 +1,17 @@
+# Configuration du serveur HTTP pour Morgan (logs)
+# Ajout dans le fichier server.js du service Auth
+
+// Middleware pour la journalisation
+const path = require('path');
+const fs = require('fs');
+const morgan = require('morgan');
+
+// Création du répertoire de logs si nécessaire
+const logDirectory = path.join(__dirname, 'logs');
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// Création d'un flux d'écriture pour les logs
+const accessLogStream = fs.createWriteStream(path.join(logDirectory, 'access.log'), { flags: 'a' });
+
+// Configuration de Morgan pour journaliser au format combiné
+app.use(morgan('combined', { stream: accessLogStream }));

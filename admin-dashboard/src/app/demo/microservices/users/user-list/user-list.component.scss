@@ -1,0 +1,161 @@
+// Congo flag colors (as per user rules)
+$congo-red: #e00024;
+$congo-yellow: #fbde4a;
+$congo-green: #007e39;
+
+// Background colors
+.bg-congo-red {
+  background-color: $congo-red !important;
+  border-color: $congo-red !important;
+}
+
+.bg-congo-yellow {
+  background-color: $congo-yellow !important;
+  border-color: $congo-yellow !important;
+}
+
+.bg-congo-green {
+  background-color: $congo-green !important;
+  border-color: $congo-green !important;
+}
+
+// Text colors
+.text-congo-red {
+  color: $congo-red !important;
+}
+
+.text-congo-yellow {
+  color: $congo-yellow !important;
+}
+
+.text-congo-green {
+  color: $congo-green !important;
+}
+
+// Form styling
+.form-control, .form-select {
+  &:focus {
+    border-color: rgba($congo-green, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba($congo-green, 0.25);
+  }
+}
+
+// Button styling with Congo colors
+.btn {
+  &.bg-congo-red {
+    color: white;
+    &:hover {
+      background-color: darken($congo-red, 10%) !important;
+    }
+  }
+  
+  &.bg-congo-yellow {
+    color: #212529;
+    &:hover {
+      background-color: darken($congo-yellow, 10%) !important;
+    }
+  }
+  
+  &.bg-congo-green {
+    color: white;
+    &:hover {
+      background-color: darken($congo-green, 10%) !important;
+    }
+  }
+}
+
+// Table styling
+.table {
+  thead {
+    th {
+      background-color: rgba($congo-green, 0.05);
+      border-bottom: 2px solid rgba($congo-green, 0.1);
+    }
+  }
+  
+  tbody {
+    tr {
+      &:hover {
+        background-color: rgba($congo-green, 0.05);
+      }
+    }
+  }
+}
+
+// Pagination styling
+.pagination {
+  .page-item {
+    &.active .page-link {
+      background-color: $congo-green;
+      border-color: $congo-green;
+    }
+    
+    .page-link {
+      color: $congo-green;
+      
+      &:hover {
+        background-color: rgba($congo-green, 0.1);
+      }
+    }
+  }
+}
+
+// Alert styling
+.alert-success {
+  background-color: rgba($congo-green, 0.1);
+  border-color: rgba($congo-green, 0.2);
+  color: darken($congo-green, 10%);
+}
+
+.alert-danger {
+  background-color: rgba($congo-red, 0.1);
+  border-color: rgba($congo-red, 0.2);
+  color: darken($congo-red, 10%);
+}
+
+// Dropdown styling
+.dropdown-menu {
+  border-color: rgba($congo-green, 0.1);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  
+  .dropdown-item {
+    &:hover {
+      background-color: rgba($congo-green, 0.05);
+    }
+    
+    &.text-danger:hover {
+      background-color: rgba($congo-red, 0.05);
+    }
+    
+    &.text-success:hover {
+      background-color: rgba($congo-green, 0.05);
+    }
+    
+    &.text-warning:hover {
+      background-color: rgba($congo-yellow, 0.05);
+    }
+  }
+}
+
+// Avatar styling
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  
+  .avatar-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-weight: 500;
+  }
+}
+
+// Spinner styling
+.spinner-border.text-congo-green {
+  color: $congo-green !important;
+}

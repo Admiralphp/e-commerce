@@ -1,0 +1,92 @@
+// Congo flag colors (as per user rules)
+$congo-red: #e00024;
+$congo-yellow: #fbde4a;
+$congo-green: #007e39;
+
+// Background colors
+.bg-congo-red {
+  background-color: $congo-red !important;
+  border-color: $congo-red !important;
+}
+
+.bg-congo-yellow {
+  background-color: $congo-yellow !important;
+  border-color: $congo-yellow !important;
+}
+
+.bg-congo-green {
+  background-color: $congo-green !important;
+  border-color: $congo-green !important;
+}
+
+// Text colors
+.text-congo-red {
+  color: $congo-red !important;
+}
+
+.text-congo-yellow {
+  color: $congo-yellow !important;
+}
+
+.text-congo-green {
+  color: $congo-green !important;
+}
+
+// Product image preview
+.product-preview {
+  max-width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+// Form styling
+.form-control, .form-select {
+  &:focus {
+    border-color: rgba($congo-green, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba($congo-green, 0.25);
+  }
+}
+
+// Button styling with Congo colors
+.btn {
+  &.bg-congo-red {
+    color: white;
+    &:hover {
+      background-color: darken($congo-red, 10%) !important;
+    }
+    &:disabled {
+      background-color: lighten($congo-red, 20%) !important;
+      border-color: lighten($congo-red, 20%) !important;
+    }
+  }
+  
+  &.bg-congo-yellow {
+    color: #212529;
+    &:hover {
+      background-color: darken($congo-yellow, 10%) !important;
+    }
+  }
+  
+  &.bg-congo-green {
+    color: white;
+    &:hover {
+      background-color: darken($congo-green, 10%) !important;
+    }
+  }
+}
+
+// Alert styling
+.alert-success {
+  background-color: rgba($congo-green, 0.1);
+  border-color: rgba($congo-green, 0.2);
+  color: darken($congo-green, 10%);
+}
+
+.alert-danger {
+  background-color: rgba($congo-red, 0.1);
+  border-color: rgba($congo-red, 0.2);
+  color: darken($congo-red, 10%);
+}

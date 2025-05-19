@@ -1,0 +1,172 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="User Management" headerClass="bg-congo-green text-white">
+      <!-- Alert Messages -->
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <!-- Filters and Search -->
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="searchQuery" 
+              placeholder="Search users..."
+              (keyup.enter)="searchUsers()"
+            >
+            <button class="btn bg-congo-red text-white" type="button" (click)="searchUsers()">
+              <i class="ti ti-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="roleFilter" (change)="searchUsers()">
+            <option *ngFor="let option of roleOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="searchUsers()">
+            <option *ngFor="let option of statusOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+        <div class="col-md-3 text-end">
+          <button class="btn bg-congo-yellow text-dark me-2" (click)="loadUsers()">
+            <i class="ti ti-refresh"></i> Refresh
+          </button>
+          <a routerLink="/users/add" class="btn bg-congo-green text-white">
+            <i class="ti ti-plus"></i> Add User
+          </a>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-congo-green" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading users...</p>
+      </div>
+
+      <!-- Users Table -->
+      <div class="table-responsive" *ngIf="!isLoading && filteredUsers.length > 0">
+        <table class="table table-hover table-striped align-middle">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Joined</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-2">
+                    <div class="avatar-initial rounded-circle bg-light">
+                      <span class="text-dark">{{ user.name.charAt(0) }}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">{{ user.name }}</h6>
+                    <small class="text-muted">ID: {{ user.id }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="badge rounded-pill" [ngClass]="getRoleClass(user.role)">
+                  {{ user.role | titlecase }}
+                </span>
+              </td>
+              <td>
+                <span class="badge rounded-pill" [ngClass]="getStatusClass(user.status)">
+                  {{ user.status | titlecase }}
+                </span>
+              </td>
+              <td>{{ formatDate(user.createdAt) }}</td>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Actions
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" [routerLink]="['/users/detail', user.id]">
+                        <i class="ti ti-eye me-1"></i> View Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" [routerLink]="['/users/edit', user.id]">
+                        <i class="ti ti-edit me-1"></i> Edit User
+                      </a>
+                    </li>
+                    <li *ngIf="user.status !== 'active'">
+                      <a class="dropdown-item text-success" href="javascript:" (click)="updateUserStatus(user.id, 'active')">
+                        <i class="ti ti-check me-1"></i> Activate
+                      </a>
+                    </li>
+                    <li *ngIf="user.status !== 'inactive'">
+                      <a class="dropdown-item text-warning" href="javascript:" (click)="updateUserStatus(user.id, 'inactive')">
+                        <i class="ti ti-ban me-1"></i> Deactivate
+                      </a>
+                    </li>
+                    <li *ngIf="user.status !== 'suspended'">
+                      <a class="dropdown-item text-danger" href="javascript:" (click)="updateUserStatus(user.id, 'suspended')">
+                        <i class="ti ti-lock me-1"></i> Suspend
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && filteredUsers.length === 0" class="text-center py-5">
+        <i class="ti ti-users text-muted" style="font-size: 48px;"></i>
+        <p class="mt-3">No users found</p>
+        <p class="text-muted" *ngIf="roleFilter || statusFilter || searchQuery">
+          Try adjusting your filters to see more results
+        </p>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-3" *ngIf="!isLoading && users.length > 0">
+        <div>
+          <span class="text-muted">Showing {{ filteredUsers.length }} of {{ totalItems }} users</span>
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{disabled: currentPage === 0}">
+              <a class="page-link" href="javascript:" (click)="onPageChange(currentPage)">
+                <i class="ti ti-chevron-left"></i>
+              </a>
+            </li>
+            <li class="page-item" *ngFor="let page of [].constructor(Math.ceil(totalItems / pageSize)); let i = index" 
+                [ngClass]="{active: currentPage === i}">
+              <a class="page-link" href="javascript:" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{disabled: currentPage === Math.ceil(totalItems / pageSize) - 1}">
+              <a class="page-link" href="javascript:" (click)="onPageChange(currentPage + 2)">
+                <i class="ti ti-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </app-card>
+  </div>
+</div>
